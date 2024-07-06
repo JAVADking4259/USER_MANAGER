@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {auth} from './entity/auth.ent'
+import { JwtService } from "@nestjs/jwt";
 
 
 @Injectable()
@@ -9,14 +10,19 @@ export class authService{
     constructor(
         @InjectRepository(auth)
         private authRepository: Repository<auth>,
+        private readonly jwt:JwtService
       ) {}
 
     getAll():Promise<auth[]>{
         return this.authRepository.find();
     }  
 
-    getOne(id:number):Promise<auth>{
-        return this.authRepository.findOneBy({id})
+   async getOne(id:number){
+      const data = await this.authRepository.findOneBy({id})
+      return {
+        token:this.jwt.sign({id}),
+        data
+      }
     }
 
     create(user:auth):Promise<auth>{

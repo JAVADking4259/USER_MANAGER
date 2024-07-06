@@ -13,7 +13,7 @@ export class authController{
     }
 
     @Get(':id')
-    getOne(@Param('id') id:number): Promise<auth>{
+    getOne(@Param('id') id:number){
         return this.authService.getOne(Number(id));
     }
 
